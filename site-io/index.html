@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storeback.io — Sovereign Knowledge Network & Zero-Knowledge Relay</title>
+  <meta name="description" content="Real-time global telemetry and zero-knowledge directory search for the Storeback autonomous AI data monetization mesh.">
+  <style>
+    :root {
+      --bg: #030712;
+      --card-bg: rgba(17, 24, 39, 0.7);
+      --card-border: rgba(55, 65, 81, 0.5);
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.2);
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 0 1.5rem 5rem;
+    }
+    header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 0 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 1.5rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+    .hero {
+      max-width: 900px;
+      margin: 4.5rem auto 3.5rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+    }
+    
+    /* Telemetry Teleport Grid */
+    .telemetry-grid {
+      max-width: 1000px;
+      margin: 0 auto 4rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+    }
+    .stat-val {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    /* Directory Search */
+    .search-section {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      backdrop-filter: blur(12px);
+    }
+    .search-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .search-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+    .search-box {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-box:focus {
+      border-color: var(--accent);
+    }
+    .listing-item {
+      padding: 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+    .listing-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .listing-slug {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #38bdf8;
+    }
+    .listing-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+    .listing-price {
+      text-align: right;
+    }
+    .price-badge {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    footer {
+      max-width: 1000px;
+      margin: 6rem auto 0;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      padding-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <div class="status-dot"></div>
+      <span>Storeback Network</span>
+    </div>
+    <nav>
+      <a href="#radar">Network Radar</a>
+      <a href="#directory">Directory</a>
+      <a href="https://storeback.org" target="_blank">Protocol Docs (storeback.org) &rarr;</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>The Sovereign Knowledge Network</h1>
+      <p>
+        Real-time telemetry and zero-knowledge directory routing for peer-to-peer enterprise knowledge vending.
+      </p>
+    </section>
+
+    <!-- Telemetry Radar -->
+    <section class="telemetry-grid" id="radar">
+      <div class="stat-card">
+        <div class="stat-val" id="val-nodes">142</div>
+        <div class="stat-label">Active Sovereign Nodes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: #38bdf8;">5,840 XRP</div>
+        <div class="stat-label">24h Settlement Volume</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: var(--accent);">285 ms</div>
+        <div class="stat-label">Avg. End-to-End Latency</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color: #a855f7;">0.00 B</div>
+        <div class="stat-label">Cloud Data Residue</div>
+      </div>
+    </section>
+
+    <!-- Zero-Knowledge Directory Search -->
+    <section class="search-section" id="directory">
+      <div class="search-title">Zero-Knowledge Manifest Directory</div>
+      <div class="search-subtitle">
+        External AI agents discover available knowledge endpoints without exposing raw datasets or IP addresses.
+      </div>
+
+      <input 
+        type="text" 
+        class="search-box" 
+        id="search-input" 
+        placeholder="Filter verified listings (e.g. 'defense', 'sacramental', 'titanium', 'invoicing')..." 
+        onkeyup="filterListings()"
+      />
+
+      <div id="listings-container">
+        <div class="listing-item" data-keywords="defense titanium cnc tolerances aerospace as9100d itar">
+          <div>
+            <div class="listing-slug">defense-titanium-tolerances-2026</div>
+            <div class="listing-desc">AS9100D Titanium CNC tolerance matrices & supplier lead-times. ITAR-safe synthetic differential privacy.</div>
+          </div>
+          <div class="listing-price">
+            <div class="price-badge">0.50 XRP</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">500,000 drops</div>
+          </div>
+        </div>
+
+        <div class="listing-item" data-keywords="sacramental parish catholic baptism marriage genealogy historical">
+          <div>
+            <div class="listing-slug">parish-sacramental-records-austin</div>
+            <div class="listing-desc">19th-century verified parish baptismal and matrimonial ledger indexes. Strict anonymization.</div>
+          </div>
+          <div class="listing-price">
+            <div class="price-badge">0.25 XRP</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">250,000 drops</div>
+          </div>
+        </div>
+
+        <div class="listing-item" data-keywords="patent prior art uspto claims neural on-device hardware">
+          <div>
+            <div class="listing-slug">neural-hardware-patent-citations</div>
+            <div class="listing-desc">Apple Silicon Neural Engine & spatial OCR patent prior art citations and legal claim matrices.</div>
+          </div>
+          <div class="listing-price">
+            <div class="price-badge">1.00 XRP</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">1,000,000 drops</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Storeback.io Network Edge · Cloudflare Workers Anycast Relay · Zero-Knowledge Sovereign Infrastructure</p>
+  </footer>
+
+  <script>
+    function filterListings() {
+      const query = document.getElementById("search-input").value.toLowerCase();
+      const items = document.querySelectorAll(".listing-item");
+      items.forEach(item => {
+        const text = item.getAttribute("data-keywords") + " " + item.innerText.toLowerCase();
+        if (text.includes(query)) {
+          item.style.display = "flex";
+        } else {
+          item.style.display = "none";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
