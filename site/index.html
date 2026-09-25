@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storeback Protocol — The Sovereign Knowledge Vending Protocol (x402 & XRPL)</title>
+  <meta name="description" content="Open-source protocol for autonomous AI agent knowledge monetization using HTTP 402 Payment Required and the XRP Ledger. Zero cloud custody.">
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.2);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 0 1.5rem 5rem;
+    }
+    header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 0 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .logo-badge {
+      font-size: 0.75rem;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 1.5rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+    .hero {
+      max-width: 900px;
+      margin: 5rem auto 4rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 2.5rem;
+    }
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .btn-primary:hover { background: #e2e8f0; }
+    .btn-outline {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.08); }
+    
+    /* Interactive Simulator */
+    .simulator-section {
+      max-width: 1000px;
+      margin: 4rem auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .sim-header {
+      padding: 1.25rem 1.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sim-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .sim-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 420px;
+    }
+    .sim-controls {
+      padding: 2rem;
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .sim-step {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .sim-step label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .sim-display {
+      background: #040507;
+      padding: 1.5rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #38bdf8;
+      display: flex;
+      flex-direction: column;
+    }
+    pre { white-space: pre-wrap; word-break: break-all; }
+    
+    /* Specs & Code Grid */
+    .grid-section {
+      max-width: 1000px;
+      margin: 4rem auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.75rem;
+    }
+    .card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .card code {
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    footer {
+      max-width: 1000px;
+      margin: 6rem auto 0;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      padding-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span>Storeback</span>
+      <span class="logo-badge">Protocol v1.0</span>
+    </div>
+    <nav>
+      <a href="#simulator">x402 Simulator</a>
+      <a href="#specification">RFC Specs</a>
+      <a href="#sdks">Client SDKs</a>
+      <a href="https://github.com/digitaura-ai/storeback-protocol" target="_blank">GitHub</a>
+      <a href="https://storeback.io" style="color: var(--accent);">Live Network (storeback.io) &rarr;</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Sovereign Knowledge Vending for Autonomous Agents</h1>
+      <p>
+        Monetize structured, high-value enterprise data directly to AI agents over HTTP 402 and the XRP Ledger. Zero cloud hosting, zero data custody surrender.
+      </p>
+      <div class="cta-group">
+        <a href="#simulator" class="btn btn-primary">Try x402 Handshake</a>
+        <a href="https://github.com/digitaura-ai/storeback-protocol" class="btn btn-outline" target="_blank">View GitHub Repository</a>
+      </div>
+    </section>
+
+    <!-- Interactive Handshake Simulator -->
+    <section class="simulator-section" id="simulator">
+      <div class="sim-header">
+        <div class="sim-title">
+          <span style="color: #22c55e;">●</span> Interactive x402 Wire Handshake Simulator
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
+          Node: austin-node.storeback.io:8090
+        </div>
+      </div>
+      <div class="sim-body">
+        <div class="sim-controls">
+          <div class="sim-step">
+            <label>Step 1: Unauthenticated Buyer Request</label>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              External AI Agent issues GET request without payment proof.
+            </p>
+            <button class="btn btn-outline" id="btn-request" onclick="runSimStep1()">
+              GET /v1/vault/storeback/query?slug=defense-metals-2026
+            </button>
+          </div>
+
+          <div class="sim-step">
+            <label>Step 2: Micro-Payment Settlement</label>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Agent signs 0.50 XRP micropayment to host address on XRPL.
+            </p>
+            <button class="btn btn-primary" id="btn-pay" onclick="runSimStep2()" disabled>
+              Sign & Settle 0.50 XRP (500,000 Drops)
+            </button>
+          </div>
+
+          <div class="sim-step">
+            <label>Step 3: Verification & Privacy Synthesis</label>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Local node verifies on-chain drops, scrubs PII, and streams synthetic JSON.
+            </p>
+          </div>
+        </div>
+
+        <div class="sim-display">
+          <div style="color: #64748b; margin-bottom: 0.75rem; font-size: 0.75rem; text-transform: uppercase;">
+            Live Wire Stream:
+          </div>
+          <pre id="sim-output">// Click 'GET /query' to initiate the protocol handshake...</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- RFC Specs & Quickstarts -->
+    <section class="grid-section" id="specification">
+      <div class="card">
+        <h3>HTTP 402 Wire Format</h3>
+        <p>Standardized challenge headers returned when an unpaid agent requests protected datasets:</p>
+        <code>X-402-Price-Drops: 500000</code><br><br>
+        <code>X-402-Recipient-XRPL: r...</code><br><br>
+        <code>X-402-Nonce: a8f9...</code>
+      </div>
+
+      <div class="card">
+        <h3>Differential Privacy Invariant</h3>
+        <p>On-device AST filter scrubs PII in RAM and injects calibrated Laplacian noise into numerical aggregates:</p>
+        <code>Laplace(scale = sensitivity / epsilon)</code><br><br>
+        <p style="font-size: 0.85rem; color: #38bdf8;">Guarantees zero raw document leaks.</p>
+      </div>
+
+      <div class="card" id="sdks">
+        <h3>One-Line Client Install</h3>
+        <p>Integrate Storeback data queries into any AI agent framework:</p>
+        <code>cargo add storeback</code><br><br>
+        <code>pip install storeback</code><br><br>
+        <code>npm i @storeback/client</code>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Storeback Open Protocol Specification · Hosted on Cloudflare Pages · Apache 2.0 / MIT Open Standard</p>
+  </footer>
+
+  <script>
+    let simNonce = "7f2e1a9b4c0d8e6f";
+    function runSimStep1() {
+      const out = document.getElementById("sim-output");
+      out.style.color = "#fbbf24";
+      out.textContent = 
+`> GET /v1/vault/storeback/query?slug=defense-metals-2026 HTTP/1.1
+> Host: austin-node.storeback.io
+> User-Agent: AutonomousBuyerAgent/1.0
+
+< HTTP/1.1 402 Payment Required
+< WWW-Authenticate: x402 realm="Storeback Sovereign Data Vending"
+< X-402-Version: 1.0
+< X-402-Slug: defense-metals-2026
+< X-402-Price-Drops: 500000
+< X-402-Price-XRP: 0.500000
+< X-402-Recipient-XRPL: rDigitauraSovereignEnclave77
+< X-402-Nonce: ${simNonce}
+< X-402-Expires: 1774567200
+< Content-Type: application/json
+
+{
+  "error": "Payment Required",
+  "status_code": 402,
+  "challenge": {
+    "pricing": { "drops": 500000, "xrp": 0.50 },
+    "recipient": "rDigitauraSovereignEnclave77",
+    "nonce": "${simNonce}"
+  }
+}`;
+      document.getElementById("btn-pay").disabled = false;
+    }
+
+    function runSimStep2() {
+      const out = document.getElementById("sim-output");
+      out.style.color = "#38bdf8";
+      out.textContent = 
+`> GET /v1/vault/storeback/query?slug=defense-metals-2026 HTTP/1.1
+> Host: austin-node.storeback.io
+> Authorization: x402 tx_hash=0x9B42... nonce=${simNonce}
+
+[On-Device Node Verification]:
+✓ XRPL drops verified: 500,000 drops (0.50 XRP) confirmed
+✓ Double-Entry GL Voucher: Debit Asset:1030 / Credit Revenue:4030
+✓ AST Entity Redaction: PII scrubbed in volatile RAM
+✓ Calibrated Laplacian DP Noise applied (epsilon=1.0)
+
+< HTTP/1.1 200 OK
+< Content-Type: application/json
+
+{
+  "status": "success",
+  "resource_slug": "defense-metals-2026",
+  "title": "Defense Metals 2026",
+  "privacy_standard": {
+    "engine": "Storeback AST Differential Privacy (RAM-Only)",
+    "pii_scrubbed": true,
+    "disk_decryption_used": false
+  },
+  "settlement": {
+    "network": "xrpl",
+    "gross_amount": 0.50,
+    "currency": "XRP"
+  },
+  "data": [
+    {
+      "record_id": "REC-9E41",
+      "material_grade": "Titanium Ti-6Al-4V Grade 5",
+      "tolerance_microns": 12.38,
+      "unit_price_usd": 483.92,
+      "internal_contact_email": "[REDACTED_EMAIL]",
+      "client_reference": "Client: [SOVEREIGN_MASKED_ENTITY]"
+    }
+  ]
+}`;
+    }
+  </script>
+</body>
+</html>
