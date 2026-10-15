@@ -1,0 +1,23 @@
+{
+  "name": "@storeback/client",
+  "version": "1.0.0",
+  "description": "Official TypeScript SDK for the Storeback Protocol (RFC-0402 HTTP 402 Micropayment Vending)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "storeback",
+    "x402",
+    "http-402",
+    "xrpl",
+    "base-usdc",
+    "micropayments"
+  ],
+  "author": "Storeback Protocol Working Group",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StorebackDataCatalog",
+  "description": "JSON-LD DataCatalog manifest schema for Storeback autonomous data vending nodes, including 5-Pillar TQI privacy guarantees.",
+  "type": "object",
+  "required": [
+    "@context",
+    "@type",
+    "node_id",
+    "catalog_digest",
+    "generated_at",
+    "protocol_version",
+    "datasets",
+    "sovereignty_invariants"
+  ],
+  "properties": {
+    "@context": {
+      "type": "string",
+      "const": "https://storeback.org/schemas/v1"
+    },
+    "@type": {
+      "type": "string",
+      "const": "DataCatalog"
+    },
+    "node_id": {
+      "type": "string",
+      "description": "Unique cryptographic node identifier (e.g., node_8f2a9c...)"
+    },
+    "node_subdomain": {
+      "type": "string",
+      "description": "Public edge relay subdomain assigned to this node"
+    },
+    "catalog_digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "description": "Cryptographic SHA-256 digest of catalog state"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "protocol_version": {
+      "type": "string",
+      "default": "1.0.0"
+    },
+    "dataset_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "@type",
+          "identifier",
+          "name",
+          "pricing",
+          "x402_endpoint",
+          "privacy_guarantee"
+        ],
+        "properties": {
+          "@type": {
+            "type": "string",
+            "const": "Dataset"
+          },
+          "identifier": {
+            "type": "string",
+            "description": "Unique resource slug"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "dateModified": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pricing": {
+            "type": "object",
+            "properties": {
+              "xrpl": {
+                "type": "object",
+                "properties": {
+                  "amount_xrp": { "type": "number" },
+                  "amount_drops": { "type": "integer" },
+                  "recipient_address": { "type": "string" }
+                }
+              },
+              "base_usdc": {
+                "type": "object",
+                "properties": {
+                  "amount_usdc": { "type": "number" },
+                  "amount_micros": { "type": "integer" },
+                  "recipient_address": { "type": "string" }
+                }
+              }
+            }
+          },
+          "x402_endpoint": {
+            "type": "string",
+            "format": "uri"
+          },
+          "privacy_guarantee": {
+            "type": "object",
+            "required": ["engine", "tqi_score", "epsilon"],
+            "properties": {
+              "engine": {
+                "type": "string",
+                "description": "Transformation engine name (e.g., Storeback Identity-Preserving Synthetic Transformer)"
+              },
+              "epsilon": {
+                "type": "number",
+                "description": "Differential privacy parameter epsilon"
+              },
+              "tqi_score": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Composite Transformation Quality Index (TQI = 100 * P^w1 * C^w2 * F^w3 * U^w4 * L^w5)"
+              },
+              "metrics": {
+                "type": "object",
+                "properties": {
+                  "privacy_score": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "coverage_score": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "fidelity_score": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "utility_score": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "linkage_f1": { "type": "number", "minimum": 0, "maximum": 1 },
+                  "decoy_retention": { "type": "number", "minimum": 0, "maximum": 1 }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sovereignty_invariants": {
+      "type": "object",
+      "required": [
+        "air_gapped_custody",
+        "on_device_differential_privacy",
+        "identity_preserving_linkage",
+        "zero_cloud_data_residency"
+      ],
+      "properties": {
+        "air_gapped_custody": { "type": "boolean" },
+        "on_device_differential_privacy": { "type": "boolean" },
+        "identity_preserving_linkage": { "type": "boolean" },
+        "zero_cloud_data_residency": { "type": "boolean" }
+      }
+    }
+  }
+}

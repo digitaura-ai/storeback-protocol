@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storeback Protocol — The Sovereign Knowledge Vending Protocol (x402 & XRPL/Base)</title>
+  <meta name="description" content="Open-source protocol for autonomous AI agent knowledge monetization using HTTP 402 Payment Required, XRP Ledger drops, and Base USDC. Zero cloud custody.">
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.2);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 0 1.5rem 5rem;
+    }
+    header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 0 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .logo-badge {
+      font-size: 0.75rem;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 1.5rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+    .hero {
+      max-width: 900px;
+      margin: 5rem auto 4rem;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 760px;
+      margin: 0 auto 2.5rem;
+    }
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .btn-primary:hover { background: #e2e8f0; }
+    .btn-outline {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.08); }
+    
+    /* Interactive Simulator */
+    .simulator-section {
+      max-width: 1000px;
+      margin: 4rem auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .sim-header {
+      padding: 1.25rem 1.5rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sim-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .sim-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 480px;
+    }
+    @media (max-width: 800px) {
+      .sim-body { grid-template-columns: 1fr; }
+    }
+    .sim-controls {
+      padding: 2rem;
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .sim-step {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .sim-step label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+    .sim-rail-selector {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .rail-btn {
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      background: rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+    }
+    .rail-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .sim-display {
+      background: #040507;
+      padding: 1.5rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #38bdf8;
+      display: flex;
+      flex-direction: column;
+    }
+    pre { white-space: pre-wrap; word-break: break-all; }
+    
+    /* Specs & Code Grid */
+    .grid-section {
+      max-width: 1000px;
+      margin: 4rem auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.75rem;
+    }
+    .card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .card code {
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: #38bdf8;
+    }
+    footer {
+      max-width: 1000px;
+      margin: 6rem auto 0;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      padding-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span>Storeback</span>
+      <span class="logo-badge">RFC-0402 v1.1</span>
+    </div>
+    <nav>
+      <a href="#simulator">x402 Simulator</a>
+      <a href="#specification">RFC Specs</a>
+      <a href="#sdks">Client SDKs</a>
+      <a href="https://github.com/digitaura-ai/storeback-protocol" target="_blank">GitHub</a>
+      <a href="https://storeback.io" style="color: var(--accent);">Live Network (storeback.io) &rarr;</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Sovereign Knowledge Vending for Autonomous Agents</h1>
+      <p>
+        Monetize structured, high-value enterprise knowledge directly to AI agents over HTTP 402 with XRP Ledger drops and Base USDC settlement. Zero cloud hosting, zero data custody surrender.
+      </p>
+      <div class="cta-group">
+        <a href="#simulator" class="btn btn-primary">Try x402 Handshake</a>
+        <a href="https://github.com/digitaura-ai/storeback-protocol" class="btn btn-outline" target="_blank">View GitHub Repository</a>
+      </div>
+    </section>
+
+    <!-- Interactive Handshake Simulator -->
+    <section class="simulator-section" id="simulator">
+      <div class="sim-header">
+        <div class="sim-title">
+          <span style="color: #22c55e;">●</span> Interactive x402 Wire Handshake Simulator
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
+          Node: austin-node.storeback.io:8090
+        </div>
+      </div>
+      <div class="sim-body">
+        <div class="sim-controls">
+          <div class="sim-step">
+            <label>Step 1: Unauthenticated Buyer Request</label>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              External AI Agent issues GET query without payment proof.
+            </p>
+            <button class="btn btn-outline" id="btn-request" onclick="runSimStep1()">
+              GET /v1/vault/storeback/query?slug=inventory-precision-parts
+            </button>
+          </div>
+
+          <div class="sim-step">
+            <label>Step 2: Settlement Rail Selection</label>
+            <div class="sim-rail-selector">
+              <button class="rail-btn active" id="rail-xrpl" onclick="selectRail('xrpl')">XRPL (Drops)</button>
+              <button class="rail-btn" id="rail-base" onclick="selectRail('base')">Base (USDC)</button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);" id="rail-desc">
+              Buyer signs 500,000 drops (0.50 XRP) micropayment to host address on XRPL.
+            </p>
+            <button class="btn btn-primary" id="btn-pay" onclick="runSimStep2()" disabled>
+              Sign & Settle Micropayment
+            </button>
+          </div>
+
+          <div class="sim-step">
+            <label>Step 3: Verification & Synthetic Stream</label>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Host node verifies on-chain drops, executes deterministic differential privacy, and streams synthetic JSON.
+            </p>
+          </div>
+        </div>
+
+        <div class="sim-display">
+          <div style="color: #64748b; margin-bottom: 0.75rem; font-size: 0.75rem; text-transform: uppercase;">
+            Live Wire Stream:
+          </div>
+          <pre id="sim-output">// Click 'GET /v1/vault/storeback/query' to initiate the protocol handshake...</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- RFC Specs & Quickstarts -->
+    <section class="grid-section" id="specification">
+      <div class="card">
+        <h3>Dual-Rail HTTP 402 Wire Format</h3>
+        <p>Standardized challenge headers supporting both XRP Ledger drops and Base USDC micro-units:</p>
+        <code>X-402-Price-Drops: 500000</code><br><br>
+        <code>X-402-Price-USDC-Micro: 500000</code><br><br>
+        <code>X-402-Nonce: 7f2e1a9b...</code><br><br>
+        <code>X-402-Digest: 9a8b7c6d...</code>
+      </div>
+
+      <div class="card">
+        <h3>Deterministic Differential Privacy</h3>
+        <p>HMAC-SHA256 seeded Laplacian noise defeats Law-of-Large-Numbers averaging attacks across repeated queries:</p>
+        <code>seed = HMAC(salt, id:field:val)</code><br><br>
+        <code>u = uniform(seed) - 0.5</code><br><br>
+        <p style="font-size: 0.85rem; color: #38bdf8;">Context-free entity scrubbing with referential graph linkage (L=1.0).</p>
+      </div>
+
+      <div class="card">
+        <h3>Live Vault Query Engine</h3>
+        <p>Strict schema allowlists query local SQLite stores with zero raw OCR or purchase line item leakage:</p>
+        <code>inventory_items &rarr; INV-xxxx</code><br><br>
+        <code>catalog_services &rarr; SVC-xxxx</code><br><br>
+        <p style="font-size: 0.85rem; color: #38bdf8;">Real-time dynamic dataset counts in JSON-LD catalog manifests.</p>
+      </div>
+
+      <div class="card" id="sdks">
+        <h3>Official Client SDKs</h3>
+        <p>Integrate Storeback knowledge queries into any autonomous agent framework:</p>
+        <code>cargo add x402-engine</code><br><br>
+        <code>pip install storeback</code><br><br>
+        <code>npm i @storeback/sdk</code>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Storeback Open Protocol Specification (RFC-0402) · Hosted on Cloudflare Pages · Apache 2.0 Open Standard</p>
+  </footer>
+
+  <script>
+    let currentRail = 'xrpl';
+    let simNonce = "7f2e1a9b4c0d8e6f";
+
+    function selectRail(rail) {
+      currentRail = rail;
+      document.getElementById('rail-xrpl').classList.toggle('active', rail === 'xrpl');
+      document.getElementById('rail-base').classList.toggle('active', rail === 'base');
+      
+      const desc = document.getElementById('rail-desc');
+      if (rail === 'xrpl') {
+        desc.textContent = "Buyer signs 500,000 drops (0.50 XRP) micropayment to host address on XRPL.";
+      } else {
+        desc.textContent = "Buyer signs 500,000 micro-USDC ($0.50) transfer on Base L2.";
+      }
+      
+      if (!document.getElementById('btn-pay').disabled) {
+        document.getElementById('btn-pay').textContent = rail === 'xrpl' 
+          ? "Sign & Settle 0.50 XRP (500,000 Drops)" 
+          : "Sign & Settle 0.50 USDC (500,000 Micro-USDC)";
+      }
+    }
+
+    function runSimStep1() {
+      const out = document.getElementById("sim-output");
+      out.style.color = "#fbbf24";
+      out.textContent = 
+`> GET /v1/vault/storeback/query?slug=inventory-precision-parts HTTP/1.1
+> Host: austin-node.storeback.io
+> User-Agent: AutonomousBuyerAgent/1.0
+
+< HTTP/1.1 402 Payment Required
+< WWW-Authenticate: x402 realm="Storeback Sovereign Data Vending"
+< X-402-Version: 1.1
+< X-402-Slug: inventory-precision-parts
+< X-402-Price-Drops: 500000
+< X-402-Price-XRP: 0.500000
+< X-402-Recipient-XRPL: rDigitauraSovereignEnclave77
+< X-402-Price-USDC-Micro: 500000
+< X-402-Recipient-Base: 0x8aF29C8B56e729a4918e11F1889C23f0aF934271
+< X-402-Nonce: ${simNonce}
+< X-402-Expires: 1774567200
+< X-402-Digest: 9a8b7c6d5e4f3a2b1c8d7e6f5a4b3c2d1e0f
+< Content-Type: application/json
+
+{
+  "error": "Payment Required",
+  "status_code": 402,
+  "challenge": {
+    "pricing": {
+      "xrpl": { "drops": 500000, "xrp": 0.50 },
+      "base": { "usdc_micro": 500000, "usdc": 0.50 }
+    },
+    "recipients": {
+      "xrpl": "rDigitauraSovereignEnclave77",
+      "base": "0x8aF29C8B56e729a4918e11F1889C23f0aF934271"
+    },
+    "nonce": "${simNonce}"
+  }
+}`;
+      const payBtn = document.getElementById("btn-pay");
+      payBtn.disabled = false;
+      payBtn.textContent = currentRail === 'xrpl' 
+        ? "Sign & Settle 0.50 XRP (500,000 Drops)" 
+        : "Sign & Settle 0.50 USDC (500,000 Micro-USDC)";
+    }
+
+    function runSimStep2() {
+      const out = document.getElementById("sim-output");
+      out.style.color = "#38bdf8";
+
+      const authHeader = currentRail === 'xrpl' 
+        ? `Authorization: x402 tx_hash=0x9B42E7A... nonce=${simNonce}`
+        : `X-PAYMENT: eyJuZXR3b3JrIjoiYmFzZSIsInR4X2hhc2giOiIweDk4NzYiLCJub25jZSI6IjdkMmUxYTkifQ==`;
+
+      const networkNote = currentRail === 'xrpl'
+        ? `✓ XRPL settlement verified: 500,000 drops (0.50 XRP) confirmed on-chain`
+        : `✓ Base L2 USDC settlement verified: 500,000 micro-units ($0.50) confirmed on-chain`;
+
+      out.textContent = 
+`> GET /v1/vault/storeback/query?slug=inventory-precision-parts HTTP/1.1
+> Host: austin-node.storeback.io
+> ${authHeader}
+
+[On-Device Node Verification]:
+${networkNote}
+✓ SQLite Atomic Replay Defense: Nonce consumed and locked in VaultStore
+✓ Double-Entry GL Voucher: Debit Asset:1030 / Credit Revenue:4030
+✓ Safe Vault Query: Live query executed against 'inventory_items' (0 OCR leakage)
+✓ Context-Free Entity Scrubbing: Vendor masked to deterministic synthetic persona
+✓ Deterministic Differential Privacy: HMAC-SHA256 seeded Laplace noise applied
+✓ 5-Pillar TQI Score: 99.4/100 (Linkage F1: 1.0, Zero PII leaks)
+
+< HTTP/1.1 200 OK
+< Content-Type: application/json
+
+{
+  "status": "success",
+  "resource_slug": "inventory-precision-parts",
+  "title": "Precision Parts Inventory",
+  "source": "live_vault",
+  "privacy_standard": {
+    "engine": "Storeback Deterministic Differential Privacy (HMAC-SHA256)",
+    "epsilon": 1.0,
+    "context_free_scrubbing": true,
+    "tqi": {
+      "privacy_score": 1.0,
+      "linkage_f1": 1.0,
+      "tqi_score": 99.4
+    }
+  },
+  "settlement": {
+    "network": "${currentRail}",
+    "verified_on_chain": true,
+    "gross_amount": 0.50,
+    "currency": "${currentRail === 'xrpl' ? 'XRP' : 'USDC'}"
+  },
+  "data": [
+    {
+      "record_id": "INV-8F12",
+      "sku": "SKU-INC-01",
+      "item_name": "Precision Inconel Valve",
+      "supplier": "Persona-AerospaceAlloy-4A",
+      "material": "Inconel 718 Superalloy",
+      "unit_cost": 318.42,
+      "quantity_on_hand": 42.0
+    }
+  ]
+}`;
+    }
+  </script>
+</body>
+</html>
